@@ -1,7 +1,17 @@
 import configparser
 
-config = configparser.ConfigParser()
-config.read('../../config.ini')
 
-broker = config["BROKER"]["BROKER_URL"] or "mqtt.eclipse.org"
-topic = config["TOPICS"]["INITIAL_TOPIC"] or "test"
+class IotConfigParser:
+    def __init__(self, config_path):
+        self.__config__= config = configparser.ConfigParser()
+        self.__config__.read(config_path)
+
+    def get_section(self, section_name):
+        try:
+            config_section = self.__config__[section_name]
+            return config_section
+        except Exception as e:
+            print("Unable to get section", e)
+
+
+

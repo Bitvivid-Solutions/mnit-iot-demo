@@ -1,13 +1,14 @@
-from src.libs.paho_client import paho_client
-from src.libs.config_parser import topic
+from src.libs.paho_client import PahoIoTClient
 
 
-def pub_callback(client, userdata, mid):
+def default_pub_callback(client, userdata, mid):
     print("message was sent successfully")
 
 
-paho_client.on_publish = pub_callback
-# This message will be sent over the topic
-payload = "test"
+class PahoPublisher(PahoIoTClient):
+    def __init__(self, broker, port=1883, keepalive=60, callback=default_pub_callback):
+        PahoIoTClient.__init__(self, broker, port, keepalive)
+        self.paho_client.on_publish = callback
 
-pub = paho_client.publish(topic, payload)
+    def publish_message(self, topic, payload="test"):
+        self.paho_client.publish(topic, payload)
